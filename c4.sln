@@ -4,10 +4,19 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4", "c4\c4.vcxproj", "{5A06F393-71DE-46FE-93B4-03FD4A60FECA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4example-unicode2utf8", "c4example-unicode2utf8\c4example-unicode2utf8.vcxproj", "{C603DDF7-E883-4D8A-B2FE-FB575F95E6B9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A06F393-71DE-46FE-93B4-03FD4A60FECA} = {5A06F393-71DE-46FE-93B4-03FD4A60FECA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4example-check_convert", "c4example-check_convert\c4example-check_convert.vcxproj", "{BE75505D-94A8-4BF9-AD95-C88D2A952FBC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A06F393-71DE-46FE-93B4-03FD4A60FECA} = {5A06F393-71DE-46FE-93B4-03FD4A60FECA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4example-utf8tounicode", "c4example-utf8tounicode\c4example-utf8tounicode.vcxproj", "{FEECD77B-E1CD-48F3-B4DC-A2A6CDF311F3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A06F393-71DE-46FE-93B4-03FD4A60FECA} = {5A06F393-71DE-46FE-93B4-03FD4A60FECA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

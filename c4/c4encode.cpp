@@ -3,11 +3,11 @@
 const char CC4Encode::LITTLEENDIAN_BOM[2] = {'\xFF', '\xFE'};
 const char CC4Encode::BIGENDIAN_BOM[2]    = {'\xFE', '\xFF'};
 const char CC4Encode::UTF_8_BOM[3]        = {'\xEF', '\xBB', '\xBF'};
-CC4EncodeUnicode* CC4EncodeUnicode::s_instance = NULL;
-CC4EncodeUTF_8*   CC4EncodeUTF_8::s_instance   = NULL;
+CC4EncodeUTF16* CC4EncodeUTF16::s_instance = NULL;
+CC4EncodeUTF8*   CC4EncodeUTF8::s_instance   = NULL;
 
-CC4Encode::CC4Encode(const std::wstring& name, const std::wstring& version, bool is_auto_check)
-	:m_name(name),m_version(version),m_autoCheck(is_auto_check)
+CC4Encode::CC4Encode(const std::wstring& name, const std::wstring& version, const std::wstring& description, encode_type encode_features, bool is_auto_check)
+	:m_name(name),m_version(version),m_description(description),m_autoCheck(is_auto_check),m_encodeType(encode_features)
 {}
 
 CC4Encode::~CC4Encode()
@@ -43,40 +43,60 @@ std::wstring CC4Encode::getVersion() const
 	return m_version;
 }
 
-CC4EncodeAnsi::CC4EncodeAnsi(const std::wstring& name, const std::wstring& version, bool is_auto_check, const unsigned char * buffer, unsigned int buffer_length)
-	:CC4Encode(name, version, is_auto_check),m_mapBufferLength(buffer_length)
+std::wstring CC4Encode::getDescription() const
+{
+	return m_description;
+}
+
+encode_type CC4Encode::getEncodeType() const
+{
+	return m_encodeType;
+}
+
+CC4EncodeAnsiBase::CC4EncodeAnsiBase(const std::wstring& name, const std::wstring& version, const std::wstring& description, bool is_auto_check, const unsigned char * buffer, unsigned int buffer_length)
+	:CC4Encode(name, version, description, typeBaseOnAnsi|typeVariable|typeResultUnicode|typeExternal, is_auto_check),m_mapBufferLength(buffer_length)
 {
 	m_mapBuffer = buffer;
 	m_policies  = NULL;
 	m_segments  = NULL;
 }
 
-std::wstring CC4EncodeAnsi::toString() const
+std::wstring CC4EncodeAnsiBase::toString() const
 {
 	return CC4Encode::toString();
 }
 
-bool CC4EncodeAnsi::isAutoCheck() const
+bool CC4EncodeAnsiBase::isAutoCheck() const
 {
 	return CC4Encode::isAutoCheck();
 }
 
-void CC4EncodeAnsi::setAutoCheck(bool is_auto_check)
+void CC4EncodeAnsiBase::setAutoCheck(bool is_auto_check)
 {
 	CC4Encode::setAutoCheck(is_auto_check);
 }
 
-std::wstring CC4EncodeAnsi::getName() const
+std::wstring CC4EncodeAnsiBase::getName() const
 {
 	return CC4Encode::getName();
 }
 
-std::wstring CC4EncodeAnsi::getVersion() const
+std::wstring CC4EncodeAnsiBase::getVersion() const
 {
 	return CC4Encode::getVersion();
 }
 
-bool CC4EncodeAnsi::match(const char *src, unsigned int src_length) const
+std::wstring CC4EncodeAnsiBase::getDescription() const
+{
+	return CC4Encode::getDescription();
+}
+
+encode_type CC4EncodeAnsiBase::getEncodeType() const
+{
+	return CC4Encode::getEncodeType();
+}
+
+bool CC4EncodeAnsiBase::match(const char *src, unsigned int src_length) const
 {
 	if (NULL == src)
 		return false;
@@ -98,6 +118,7 @@ bool CC4EncodeAnsi::match(const char *src, unsigned int src_length) const
 	wchar_t ansiChar = 0;
 	for (unsigned int i=0; i<src_length;)
 	{
+		// TODO Judge byte order by m_encodeType
 		memcpy(&high, src+i, 1); // reading first byte
 		i++;
 		if (m_policies->isContinueReadNextChar(high))
@@ -117,7 +138,7 @@ bool CC4EncodeAnsi::match(const char *src, unsigned int src_length) const
 	return true;
 }
 
-std::wstring CC4EncodeAnsi::convert(const char *src, unsigned int src_length) const
+std::wstring CC4EncodeAnsiBase::wconvertText(const char *src, unsigned int src_length) const
 {
 	if (NULL == src)
 		return std::wstring();
@@ -160,14 +181,19 @@ std::wstring CC4EncodeAnsi::convert(const char *src, unsigned int src_length) co
 	return unicodeStr;
 }
 
-wchar_t CC4EncodeAnsi::convertSingleChar(char high_byte, char low_byte) const
+std::wstring CC4EncodeAnsiBase::wconvertString(const char *src) const
+{
+	return wconvertText(src, (NULL!=src) ? strlen(src): 0);
+}
+
+wchar_t CC4EncodeAnsiBase::convertSingleChar(char high_byte, char low_byte) const
 {
 	wchar_t ansiChar;
 	ansiChar = ((unsigned char)low_byte) + ((unsigned char)high_byte)*256;
 	return convertSingleChar(ansiChar);
 }
 
-wchar_t CC4EncodeAnsi::convertSingleChar(wchar_t ansi_char) const
+wchar_t CC4EncodeAnsiBase::convertSingleChar(wchar_t ansi_char) const
 {
 	const CC4Segment* seg = m_segments->findMatchedSegment(ansi_char);
 	if (NULL == seg)
@@ -183,11 +209,13 @@ wchar_t CC4EncodeAnsi::convertSingleChar(wchar_t ansi_char) const
 		int offset = ansi_char - seg->m_begin + seg->m_offset;
 		memcpy((void*)&unicodeChar, m_mapBuffer+offset*sizeof(wchar_t), sizeof(wchar_t));
 		return unicodeChar;
-	} else
+	} else if ((CC4Segment::refSelf == seg->m_reference))
+		return ansi_char;
+	else
 		return UNKNOWN_CHAR;
 }
 
-unsigned int CC4EncodeAnsi::calcUnicodeStringLength(const char *src, unsigned int src_length) const
+unsigned int CC4EncodeAnsiBase::calcUnicodeStringLength(const char *src, unsigned int src_length) const
 {
 	if (NULL == src)
 		return 0;
@@ -220,7 +248,7 @@ unsigned int CC4EncodeAnsi::calcUnicodeStringLength(const char *src, unsigned in
 	return dest_len;
 }
 
-bool CC4EncodeAnsi::convert2unicode(const char *src, unsigned int src_length, char *dest, unsigned int dest_length, bool check_dest_length) const
+bool CC4EncodeAnsiBase::convert2unicode(const char *src, unsigned int src_length, char *dest, unsigned int dest_length, bool check_dest_length) const
 {
 	if (NULL == src || NULL == dest)
 		return false;
@@ -261,12 +289,12 @@ bool CC4EncodeAnsi::convert2unicode(const char *src, unsigned int src_length, ch
 	return true;
 }
 
-bool CC4EncodeAnsi::convert2unicode(const char *src, unsigned int src_length, wchar_t *dest, unsigned int dest_str_length, bool check_dest_length) const
+bool CC4EncodeAnsiBase::convert2unicode(const char *src, unsigned int src_length, wchar_t *dest, unsigned int dest_str_length, bool check_dest_length) const
 {
 	return convert2unicode(src, src_length, (char*)dest, dest_str_length*sizeof(wchar_t), check_dest_length);
 }
 
-bool CC4EncodeAnsi::setPolicies(const CC4Policies* ptr_policies)
+bool CC4EncodeAnsiBase::setPolicies(const CC4Policies* ptr_policies)
 {
 	if (NULL == ptr_policies)
 		return false;
@@ -275,7 +303,7 @@ bool CC4EncodeAnsi::setPolicies(const CC4Policies* ptr_policies)
 	return true;
 }
 
-bool CC4EncodeAnsi::setSegments(const CC4Segments* ptr_segments)
+bool CC4EncodeAnsiBase::setSegments(const CC4Segments* ptr_segments)
 {
 	if (NULL == ptr_segments)
 		return false;
@@ -284,68 +312,105 @@ bool CC4EncodeAnsi::setSegments(const CC4Segments* ptr_segments)
 	return true;
 }
 
-const CC4Policies* CC4EncodeAnsi::getPolicies() const
+const CC4Policies* CC4EncodeAnsiBase::getPolicies() const
 {
 	return m_policies;
 }
 
-const CC4Segments* CC4EncodeAnsi::getSegments() const
+const CC4Segments* CC4EncodeAnsiBase::getSegments() const
 {
 	return m_segments;
 }
 
-CC4EncodeUnicode::CC4EncodeUnicode(const std::wstring& name, const std::wstring& version, bool is_auto_check)
-	:CC4Encode(name, version, is_auto_check)
+CC4EncodeUTF16::CC4EncodeUTF16(const std::wstring& name, const std::wstring& version, const std::wstring& description, bool is_auto_check)
+	:CC4Encode(name, version, description, CC4EncodeUTF16::_getEncodeType(), is_auto_check)
 {}
 
-std::wstring CC4EncodeUnicode::toString() const
+std::wstring CC4EncodeUTF16::toString() const
 {
 	return CC4Encode::toString();
 }
 
-bool CC4EncodeUnicode::isAutoCheck() const
+bool CC4EncodeUTF16::isAutoCheck() const
 {
 	return CC4Encode::isAutoCheck();
 }
 
-void CC4EncodeUnicode::setAutoCheck(bool is_auto_check)
+void CC4EncodeUTF16::setAutoCheck(bool is_auto_check)
 {
 	CC4Encode::setAutoCheck(is_auto_check);
 }
 
-std::wstring CC4EncodeUnicode::getName() const
+std::wstring CC4EncodeUTF16::getName() const
 {
 	return CC4Encode::getName();
 }
 
-std::wstring CC4EncodeUnicode::getVersion() const
+std::wstring CC4EncodeUTF16::getVersion() const
 {
 	return CC4Encode::getVersion();
 }
 
-std::wstring CC4EncodeUnicode::_getName()
+std::wstring CC4EncodeUTF16::getDescription() const
+{
+	return CC4Encode::getDescription();
+}
+
+encode_type CC4EncodeUTF16::getEncodeType() const
+{
+	return CC4Encode::getEncodeType();
+}
+
+std::wstring CC4EncodeUTF16::_getName()
 {
 	return L"UTF-16";
 }
 
-std::wstring CC4EncodeUnicode::_getVersion()
+std::wstring CC4EncodeUTF16::_getVersion()
 {
 	return L"Unicode";
 }
 
-CC4EncodeUnicode* CC4EncodeUnicode::getInstance()
+std::wstring CC4EncodeUTF16::_getDescription()
+{
+	return L"Supporting character range: Unicode BMP(UCS-2), from 0x0000 to 0xFFFF.";
+}
+
+encode_type CC4EncodeUTF16::_getEncodeType()
+{
+	return typeUTF16;
+}
+
+CC4EncodeUTF16* CC4EncodeUTF16::getInstance()
 {
 	if (NULL == s_instance)
-		s_instance = new CC4EncodeUnicode(CC4EncodeUnicode::_getName(), CC4EncodeUnicode::_getVersion(), false);
+		s_instance = new CC4EncodeUTF16(CC4EncodeUTF16::_getName(), CC4EncodeUTF16::_getVersion(), CC4EncodeUTF16::_getDescription(), false);
 	return s_instance;
 }
 
-bool CC4EncodeUnicode::match(const char *src, unsigned int src_length) const
+bool CC4EncodeUTF16::match(const char *src, unsigned int src_length) const
 {
-	return CC4EncodeUnicode::_match(src, src_length);
+	return CC4EncodeUTF16::_match(src, src_length);
 }
 
-std::wstring CC4EncodeUnicode::convert(const char *src, unsigned int src_length) const
+bool CC4EncodeUTF16::wmatch(const wchar_t *src, unsigned int src_str_length) const
+{
+	if (NULL!=src && src_str_length>0)
+		return true;
+	return false;
+}
+
+std::string CC4EncodeUTF16::convertText(const char *src, unsigned int src_length) const
+{
+	return CC4EncodeUTF16::convert2utf8(src, src_length, true);
+}
+
+std::string CC4EncodeUTF16::convertString(const char *src) const
+{
+	return CC4EncodeUTF16::convert2utf8(src, (src) ? strlen(src): 0, true);
+}
+
+std::wstring CC4EncodeUTF16::wconvertText(const char *src, unsigned int src_length) const
 {
 	if (NULL == src)
 		return std::wstring();
@@ -363,10 +428,35 @@ std::wstring CC4EncodeUnicode::convert(const char *src, unsigned int src_length)
 		unicodeStr[i] = *(unicodeSrc+i);
 	return unicodeStr;
 
+	// if source is a string ended with 0x0000, a better method to return wconvertText result:
 	//return std::wstring((wchar_t*)src);
 }
 
-bool CC4EncodeUnicode::_match(const char *src, unsigned int src_length)
+std::wstring CC4EncodeUTF16::wconvertString(const char *src) const
+{
+	if (NULL == src)
+		return std::wstring();
+	// if src_length is an odd number
+	if ((strlen(src)&1) != 0)
+		return std::wstring();
+
+	return std::wstring((wchar_t*)src);
+}
+
+std::wstring CC4EncodeUTF16::wconvertWideText(const wchar_t *src, unsigned int src_str_length) const
+{
+	return wconvertText((char*)src, src_str_length*sizeof(wchar_t));
+}
+
+std::wstring CC4EncodeUTF16::wconvertWideString(const wchar_t *src) const
+{
+	if (NULL == src)
+		return std::wstring();
+
+	return std::wstring(src);
+}
+
+bool CC4EncodeUTF16::_match(const char *src, unsigned int src_length)
 {
 	if (NULL == src)
 		return false;
@@ -378,7 +468,7 @@ bool CC4EncodeUnicode::_match(const char *src, unsigned int src_length)
 	return true;
 }
 
-std::string CC4EncodeUnicode::convert2utf8(const char *src, unsigned int src_length, bool is_little_endian)
+std::string CC4EncodeUTF16::convert2utf8(const char *src, unsigned int src_length, bool is_little_endian)
 {
 	if (NULL == src)
 		return std::string();
@@ -430,12 +520,12 @@ std::string CC4EncodeUnicode::convert2utf8(const char *src, unsigned int src_len
 	return utf8str;
 }
 
-std::string CC4EncodeUnicode::convert2utf8(const wchar_t *src, unsigned int src_str_length)
+std::string CC4EncodeUTF16::convert2utf8(const wchar_t *src, unsigned int src_str_length)
 {
 	return convert2utf8((char*)src, src_str_length*2, true);
 }
 
-bool CC4EncodeUnicode::convert2utf8(const char *src, unsigned int src_length, char *dest, unsigned int dest_length, bool is_little_endian, bool check_dest_length)
+bool CC4EncodeUTF16::convert2utf8(const char *src, unsigned int src_length, char *dest, unsigned int dest_length, bool is_little_endian, bool check_dest_length)
 {
 	if (NULL == src || NULL == dest)
 		return false;
@@ -481,7 +571,7 @@ bool CC4EncodeUnicode::convert2utf8(const char *src, unsigned int src_length, ch
 	return true;
 }
 
-unsigned int CC4EncodeUnicode::calcUtf8StringLength(const char *src, unsigned int src_length, bool is_little_endian)
+unsigned int CC4EncodeUTF16::calcUtf8StringLength(const char *src, unsigned int src_length, bool is_little_endian)
 {
 	if (NULL == src)
 		return 0;
@@ -517,63 +607,111 @@ unsigned int CC4EncodeUnicode::calcUtf8StringLength(const char *src, unsigned in
 	return dest_len;
 }
 
-CC4EncodeUTF_8::CC4EncodeUTF_8(const std::wstring& name, const std::wstring& version, bool is_auto_check)
-	:CC4Encode(name, version, is_auto_check)
+CC4EncodeUTF8::CC4EncodeUTF8(const std::wstring& name, const std::wstring& version, const std::wstring& description, bool is_auto_check)
+	:CC4Encode(name, version, description, CC4EncodeUTF8::_getEncodeType(), is_auto_check)
 {}
 
-std::wstring CC4EncodeUTF_8::toString() const
+std::wstring CC4EncodeUTF8::toString() const
 {
 	return CC4Encode::toString();
 }
 
-bool CC4EncodeUTF_8::isAutoCheck() const
+bool CC4EncodeUTF8::isAutoCheck() const
 {
 	return CC4Encode::isAutoCheck();
 }
 
-void CC4EncodeUTF_8::setAutoCheck(bool is_auto_check)
+void CC4EncodeUTF8::setAutoCheck(bool is_auto_check)
 {
 	CC4Encode::setAutoCheck(is_auto_check);
 }
 
-std::wstring CC4EncodeUTF_8::getName() const
+std::wstring CC4EncodeUTF8::getName() const
 {
 	return CC4Encode::getName();
 }
 
-std::wstring CC4EncodeUTF_8::getVersion() const
+std::wstring CC4EncodeUTF8::getVersion() const
 {
 	return CC4Encode::getVersion();
 }
 
-std::wstring CC4EncodeUTF_8::_getName()
+std::wstring CC4EncodeUTF8::getDescription() const
+{
+	return CC4Encode::getDescription();
+}
+
+encode_type CC4EncodeUTF8::getEncodeType() const
+{
+	return CC4Encode::getEncodeType();
+}
+
+std::wstring CC4EncodeUTF8::_getName()
 {
 	return L"UTF-8";
 }
 
-std::wstring CC4EncodeUTF_8::_getVersion()
+std::wstring CC4EncodeUTF8::_getVersion()
 {
 	return L"Unicode";
 }
 
-CC4EncodeUTF_8* CC4EncodeUTF_8::getInstance()
+std::wstring CC4EncodeUTF8::_getDescription()
+{
+	return L"Supporting character range: Unicode BMP(UCS-2), from 0x0000 to 0xFFFF.";
+}
+
+encode_type CC4EncodeUTF8::_getEncodeType()
+{
+	return typeUTF8;
+}
+
+CC4EncodeUTF8* CC4EncodeUTF8::getInstance()
 {
 	if (NULL == s_instance)
-		s_instance = new CC4EncodeUTF_8(CC4EncodeUTF_8::_getName(), CC4EncodeUTF_8::_getVersion(), true);
+		s_instance = new CC4EncodeUTF8(CC4EncodeUTF8::_getName(), CC4EncodeUTF8::_getVersion(), CC4EncodeUTF8::_getDescription(), true);
 	return s_instance;
 }
 
-bool CC4EncodeUTF_8::match(const char *src, unsigned int src_length) const
+bool CC4EncodeUTF8::match(const char *src, unsigned int src_length) const
 {
-	return CC4EncodeUTF_8::_match(src, src_length);
+	return CC4EncodeUTF8::_match(src, src_length);
 }
 
-std::wstring CC4EncodeUTF_8::convert(const char *src, unsigned int src_length) const
+std::string CC4EncodeUTF8::convertText(const char *src, unsigned int src_length) const
 {
-	return CC4EncodeUTF_8::convert2unicode(src, src_length);
+	// check is utf-8 string or not
+	if (!_match(src, src_length))
+		return std::string();
+	
+	std::string buildUtf8Str(src_length, 0);
+	for (unsigned int i=0; i<src_length; ++i)
+	{
+		buildUtf8Str[i] = *(src+i);
+	}
+	return buildUtf8Str;
 }
 
-bool CC4EncodeUTF_8::_match(const char *src, unsigned int src_length)
+std::string CC4EncodeUTF8::convertString(const char *src) const
+{
+	// check is utf-8 string or not
+	if (!_match(src, (src)?strlen(src):0))
+		return std::string();
+
+	return std::string(src);
+}
+
+std::wstring CC4EncodeUTF8::wconvertText(const char *src, unsigned int src_length) const
+{
+	return CC4EncodeUTF8::convert2unicode(src, src_length);
+}
+
+std::wstring CC4EncodeUTF8::wconvertString(const char *src) const
+{
+	return CC4EncodeUTF8::convert2unicode(src, (NULL!=src) ? strlen(src) : 0);
+}
+
+bool CC4EncodeUTF8::_match(const char *src, unsigned int src_length)
 {
 	if (NULL == src)
 		return false;
@@ -639,7 +777,7 @@ bool CC4EncodeUTF_8::_match(const char *src, unsigned int src_length)
 	return isMatched;
 }
 
-std::wstring CC4EncodeUTF_8::convert2unicode(const char *src, unsigned int src_length)
+std::wstring CC4EncodeUTF8::convert2unicode(const char *src, unsigned int src_length)
 {
 	if (NULL == src)
 		return std::wstring();
@@ -691,7 +829,7 @@ std::wstring CC4EncodeUTF_8::convert2unicode(const char *src, unsigned int src_l
 	return unicodeStr;
 }
 
-bool CC4EncodeUTF_8::convert2unicode(const char *src, unsigned int src_length, char *dest, unsigned int dest_length, bool check_dest_length)
+bool CC4EncodeUTF8::convert2unicode(const char *src, unsigned int src_length, char *dest, unsigned int dest_length, bool check_dest_length)
 {
 	if (NULL == src || NULL == dest)
 		return false;
@@ -745,12 +883,12 @@ bool CC4EncodeUTF_8::convert2unicode(const char *src, unsigned int src_length, c
 	return true;
 }
 
-bool CC4EncodeUTF_8::convert2unicode(const char *src, unsigned int src_length, wchar_t *dest, unsigned int dest_str_length, bool check_dest_length)
+bool CC4EncodeUTF8::convert2unicode(const char *src, unsigned int src_length, wchar_t *dest, unsigned int dest_str_length, bool check_dest_length)
 {
 	return convert2unicode(src, src_length, (char*)dest, dest_str_length*sizeof(wchar_t), check_dest_length);
 }
 
-unsigned int CC4EncodeUTF_8::calcUnicodeStringLength(const char *src, unsigned int src_length)
+unsigned int CC4EncodeUTF8::calcUnicodeStringLength(const char *src, unsigned int src_length)
 {
 	if (NULL == src)
 		return 0;

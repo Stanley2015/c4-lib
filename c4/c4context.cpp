@@ -10,8 +10,8 @@ CC4Context::CC4Context(const std::wstring &charmap_name, const std::wstring &bas
 	:m_bInitialized(false), m_charmapConfPath(base_path), m_basePath(base_path), m_errorMessage(L"no error.")
 {
 	m_charmapConfPath.append(charmap_name);
-	m_encodes.push_back((CC4Encode*)CC4EncodeUnicode::getInstance());
-	m_encodes.push_back((CC4Encode*)CC4EncodeUTF_8::getInstance());
+	m_encodes.push_back((CC4Encode*)CC4EncodeUTF16::getInstance());
+	m_encodes.push_back((CC4Encode*)CC4EncodeUTF8::getInstance());
 }
 
 CC4Context::~CC4Context()
@@ -128,13 +128,21 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	pElem = charmap_node->FirstChild("name")->ToElement();
 	if (!pElem) return loadCharmapResult;
 	if (!pElem->GetText()) return loadCharmapResult;
-	wstring &name = CC4EncodeUTF_8::convert2unicode(pElem->GetText(), strlen(pElem->GetText()));
+	wstring &name = CC4EncodeUTF8::convert2unicode(pElem->GetText(), strlen(pElem->GetText()));
 
-	// version
-	pElem = charmap_node->FirstChild("version")->ToElement();
-	if (!pElem) return loadCharmapResult;
-	if (!pElem->GetText()) return loadCharmapResult;
-	wstring &version = CC4EncodeUTF_8::convert2unicode(pElem->GetText(), strlen(pElem->GetText()));
+	// version. Version is optional
+	const char *ver = NULL;
+	pElem = charmap_node->FirstChildElement("version");
+	if (pElem)
+		 ver = charmap_node->FirstChildElement("version")->GetText();
+	wstring &version = CC4EncodeUTF8::convert2unicode(ver, (NULL!=ver) ? strlen(ver) : 0);
+
+	// description. Description is optional
+	const char *desc = NULL;
+	pElem = charmap_node->FirstChildElement("description");
+	if (pElem)
+		desc = charmap_node->FirstChildElement("description")->GetText();
+	wstring &description = CC4EncodeUTF8::convert2unicode(desc, (NULL!=desc) ? strlen(desc) : 0);
 
 	// isAutoCheck
 	bool isAutoCheck = false;
@@ -151,7 +159,7 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	if (!pElem) return loadCharmapResult;
 	if (!pElem->GetText()) return loadCharmapResult;
 	wstring mapPath(m_basePath);
-	mapPath.append(CC4EncodeUTF_8::convert2unicode(pElem->GetText(), strlen(pElem->GetText())));
+	mapPath.append(CC4EncodeUTF8::convert2unicode(pElem->GetText(), strlen(pElem->GetText())));
 
 	// readingpolicy
 	int num = 0;
@@ -370,7 +378,7 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	mapFile.close();
 
 	// create CC4Encode in memory
-	CC4EncodeAnsi *encode = new CC4EncodeAnsi(name, version, isAutoCheck, mapBuffer, mapBufferLength);
+	CC4EncodeAnsiBase *encode = new CC4EncodeAnsiBase(name, version, description, isAutoCheck, mapBuffer, mapBufferLength);
 	encode->setPolicies(policies);
 	encode->setSegments(segments);
 

@@ -43,22 +43,22 @@ int _tmain(int argc, _TCHAR* argv[])
 	// or
 	// outfile.write((char*)&(CC4Encode::LITTLEENDIAN_MARK),2);
 
-	if (CC4EncodeUTF_8::_match(stringBuffer, length))
+	if (CC4EncodeUTF8::_match(stringBuffer, length))
 	{
 		cout<<"utf-8 matched!"<<endl;
 
 		// output
 		/*
-		wstring resultBuffer = CC4EncodeUTF_8::convert2unicode(stringBuffer, length);
+		wstring resultBuffer = CC4EncodeUTF8::convert2unicode(stringBuffer, length);
 		cout<<"length: "<<resultBuffer.length()<<endl;
 		const wchar_t *p = resultBuffer.c_str();
 		unsigned int resultLength = resultBuffer.length();
 		outfile.write((const char*)p, resultLength*sizeof(wchar_t));
 		*/
 		// another method to convet
-		unsigned int resultLenth = CC4EncodeUTF_8::calcUnicodeStringLength(stringBuffer, length);
+		unsigned int resultLenth = CC4EncodeUTF8::calcUnicodeStringLength(stringBuffer, length);
 		wchar_t *resultBuffer = new wchar_t[resultLenth];
-		CC4EncodeUTF_8::convert2unicode(stringBuffer, length, resultBuffer, resultLenth,false);
+		CC4EncodeUTF8::convert2unicode(stringBuffer, length, resultBuffer, resultLenth,false);
 		cout<<"length: "<<resultLenth<<endl;
 		outfile.write((char*)resultBuffer, resultLenth*sizeof(wchar_t));
 		delete []resultBuffer;
@@ -68,11 +68,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	outfile.close();
 	delete []stringBuffer;
 
-	CC4EncodeUTF_8 *utf8Encode = CC4EncodeUTF_8::getInstance();
+	CC4EncodeUTF8 *utf8Encode = CC4EncodeUTF8::getInstance();
 	if (utf8Encode != NULL)
 	{
 		cout<<"address:"<<(int)utf8Encode<<endl;
-		utf8Encode = CC4EncodeUTF_8::getInstance();
+		utf8Encode = CC4EncodeUTF8::getInstance();
 		cout<<"address:"<<(int)utf8Encode<<endl;
 		// Do not need to delete the instance!
 		cout<<"get UTF-8 Encode instance success!"<<endl;
