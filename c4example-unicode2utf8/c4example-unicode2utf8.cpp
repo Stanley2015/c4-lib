@@ -82,23 +82,23 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		/*method 4*/
 		beginTime = clock();
-		string& resultBuffer4 = CC4EncodeUnicode::convert2utf8(stringBuffer, length, isLittleEndian);
+		string& resultBuffer4 = CC4EncodeUTF16::convert2utf8(stringBuffer, length, isLittleEndian);
 		endTime = clock();
 		cout<<"utf-8 string length: "<<resultBuffer4.length()<<endl;
-		cout<<"allocate method (CC4EncodeUnicode) costs time: "<<endTime - beginTime<<"ms"<<endl;
+		cout<<"allocate method (CC4EncodeUTF16) costs time: "<<endTime - beginTime<<"ms"<<endl;
 
 		/*method 5*/
 		beginTime = clock();
-		unsigned int dst_length = CC4EncodeUnicode::calcUtf8StringLength(stringBuffer, length, isLittleEndian);
+		unsigned int dst_length = CC4EncodeUTF16::calcUtf8StringLength(stringBuffer, length, isLittleEndian);
 		char *dst = new char[dst_length];
-		bool result = CC4EncodeUnicode::convert2utf8(stringBuffer, length, dst, dst_length, isLittleEndian);
+		bool result = CC4EncodeUTF16::convert2utf8(stringBuffer, length, dst, dst_length, isLittleEndian);
 		endTime = clock();
 		if (!result)
 			cerr<<"Fail to convert to utf-8\n";
 		else
 		{
 			cout<<"utf-8 string length: "<<dst_length<<endl;
-			cout<<"memory copy method (CC4EncodeUnicode) costs time: "<<endTime - beginTime<<"ms"<<endl;
+			cout<<"memory copy method (CC4EncodeUTF16) costs time: "<<endTime - beginTime<<"ms"<<endl;
 			/*writing method 1*/
 			beginTime = clock();
 			outfile.write(dst, dst_length);
@@ -133,12 +133,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	rawStringBuffer = NULL;
 	stringBuffer = NULL;
 
-	CC4EncodeUnicode *unicodeEncode = CC4EncodeUnicode::getInstance();
+	CC4EncodeUTF16 *unicodeEncode = CC4EncodeUTF16::getInstance();
 	if (unicodeEncode != NULL)
 	{
 		cout<<"get Unicode Encode instance success!"<<endl;
 		cout<<"address: "<<unicodeEncode<<endl;
-		unicodeEncode = CC4EncodeUnicode::getInstance();
+		unicodeEncode = CC4EncodeUTF16::getInstance();
 		cout<<"address: "<<unicodeEncode<<endl;
 		unicodeEncode = NULL;
 	}
