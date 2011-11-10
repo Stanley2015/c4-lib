@@ -378,7 +378,8 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	mapFile.close();
 
 	// create CC4Encode in memory
-	CC4EncodeAnsiBase *encode = new CC4EncodeAnsiBase(name, version, description, isAutoCheck, mapBuffer, mapBufferLength);
+	// TODO get features
+	CC4EncodeBase *encode = new CC4EncodeBase(name, version, description, CC4Encode::typeBaseOnAnsi|CC4Encode::typeResultUnicode, isAutoCheck, mapBuffer, mapBufferLength);
 	encode->setPolicies(policies);
 	encode->setSegments(segments);
 
