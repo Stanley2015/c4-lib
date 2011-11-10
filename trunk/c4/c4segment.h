@@ -6,9 +6,10 @@ struct CC4Segment_tag;
 typedef struct CC4Segment_tag
 {
 	enum segmentRef {
-		refASCII  = 0x00,
-		refOxFFFD = 0x01,
-		refBUFFER = 0x02
+		refASCII  = 0x01,
+		refOxFFFD = 0x02,
+		refBUFFER = 0x04,
+		refSelf   = 0x08
 	};
 
 	wchar_t         m_begin;
@@ -29,6 +30,7 @@ typedef struct CC4Segment_tag
 		if (strcmp("ascii", reference) == 0) return refASCII;
 		if (strcmp("0xFFFD", reference) == 0) return refOxFFFD;
 		if (strcmp("buffer", reference) == 0) return refBUFFER;
+		if (strcmp("self", reference) == 0) return refSelf;
 		return refOxFFFD;
 	};
 }CC4Segment, *PCC4Segment;

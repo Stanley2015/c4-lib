@@ -23,23 +23,25 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout<<"init failed. check charmap."<<endl;
 		wcout<<context.getLastErrorMessage()<<endl;
-		//cout<<CC4EncodeUnicode::convert2utf8(context.getLastErrorMessage(), wcslen(context.getLastErrorMessage()))<<endl;
+		//cout<<CC4EncodeUTF16::convert2utf8(context.getLastErrorMessage(), wcslen(context.getLastErrorMessage()))<<endl;
 		return 0;
 	}
 	cout<<"load charmaps success."<<endl;
 	cout<<"amount of charmaps:"<<context.getEncodeAmount()<<endl;
 	cout<<endl;
 
-	CC4Encode* encode = (CC4Encode*)CC4EncodeUnicode::getInstance();
+	CC4Encode* encode = (CC4Encode*)CC4EncodeUTF16::getInstance();
 	cout<<"Static method get Unicode successfully."<<endl;
 	wcout<<L"Name:"<<encode->getName()<<endl;
 	wcout<<L"Version:"<<encode->getVersion()<<endl;
+	wcout<<L"Description:"<<encode->getDescription()<<endl;
 	cout<<endl;
 
-	encode = (CC4Encode*)CC4EncodeUTF_8::getInstance();
+	encode = (CC4Encode*)CC4EncodeUTF8::getInstance();
 	cout<<"Static method get utf-8 successfully."<<endl;
 	wcout<<L"Name:"<<encode->getName()<<endl;
 	wcout<<L"Version:"<<encode->getVersion()<<endl;
+	wcout<<L"Description:"<<encode->getDescription()<<endl;
 	cout<<endl;
 
 	const CC4Encode* const_encode = context.getEncode(L"UTF-16");
@@ -49,6 +51,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout<<"Context get unicode success"<<endl;
 		wcout<<L"Name:"<<const_encode->getName()<<endl;
+		wcout<<L"Version:"<<const_encode->getVersion()<<endl;
+		wcout<<L"Description:"<<const_encode->getDescription()<<endl;
 		cout<<endl;
 	}
 
@@ -59,6 +63,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout<<"Context get utf-8 success"<<endl;
 		wcout<<"Name:"<<const_encode->getName()<<endl;
+		wcout<<L"Version:"<<const_encode->getVersion()<<endl;
+		wcout<<L"Description:"<<const_encode->getDescription()<<endl;
 		cout<<endl;
 	}
 
@@ -69,6 +75,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout<<"Context get shift-jis success"<<endl;
 		wcout<<"Name:"<<const_encode->getName()<<endl;
+		wcout<<L"Version:"<<const_encode->getVersion()<<endl;
+		wcout<<L"Description:"<<const_encode->getDescription()<<endl;
 		cout<<endl;
 	}
 
@@ -79,6 +87,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout<<"Context get GBK success"<<endl;
 		wcout<<"Name:"<<const_encode->getName()<<endl;
+		wcout<<L"Version:"<<const_encode->getVersion()<<endl;
+		wcout<<L"Description:"<<const_encode->getDescription()<<endl;
 		cout<<endl;
 	}
 
@@ -92,6 +102,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout<<"Context get BIG5 success"<<endl;
 		wcout<<"Name:"<<const_encode->getName()<<endl;
+		wcout<<L"Version:"<<const_encode->getVersion()<<endl;
+		wcout<<L"Description:"<<const_encode->getDescription()<<endl;
 		cout<<endl;
 	}
 
@@ -105,6 +117,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout<<"Context get EUC-KR(Korean) success"<<endl;
 		wcout<<"Name:"<<const_encode->getName()<<endl;
+		wcout<<L"Version:"<<const_encode->getVersion()<<endl;
+		wcout<<L"Description:"<<const_encode->getDescription()<<endl;
 		cout<<endl;
 	}
 
@@ -124,7 +138,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		const_encode = context.getMostPossibleEncode(rawStringBuffer);
 		wcout<<"Find most possible encode: "<<const_encode->getName()<<endl;
-		wstring &result = const_encode->convert(rawStringBuffer, rawLength);
+		wstring &result = const_encode->wconvertText(rawStringBuffer, rawLength);
 		delete []rawStringBuffer;
 
 		string outfilePath = "../testfiles/out/02-big52unicode.cue";
@@ -149,7 +163,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		infile2.close();
 
 		const_encode = context.getEncode(L"EUC-KR(Korean)");
-		wstring &result = const_encode->convert(rawStringBuffer, rawLength);
+		wstring &result = const_encode->wconvertText(rawStringBuffer, rawLength);
 		delete []rawStringBuffer;
 
 		string outfilePath = "../testfiles/out/01-euc-kr2unicode.cue";
