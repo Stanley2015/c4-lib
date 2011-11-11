@@ -1,4 +1,18 @@
-// This is the main DLL file.
+/************************************************************************/
+/*                                                                      */
+/* c4-lib                                                               */
+/* c4-lib is A Common Codes Converting Context library.                 */
+/*                                                                      */
+/* Version: 0.1                                                         */
+/* Author:  wei_w (weiwl07@gmail.com)                                   */
+/* Published under Apache License 2.0                                   */
+/* http://www.apache.org/licenses/LICENSE-2.0                           */
+/*                                                                      */
+/* Project URL: http://code.google.com/p/c4-lib                         */
+/*                                                                      */
+/* Copyright 2011 wei_w                                                 */
+/*                                                                      */
+/************************************************************************/
 
 #include <fstream>
 #include "c4context.h"
@@ -160,6 +174,15 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	if (!pElem->GetText()) return loadCharmapResult;
 	wstring mapPath(m_basePath);
 	mapPath.append(CC4EncodeUTF8::convert2unicode(pElem->GetText(), strlen(pElem->GetText())));
+
+	// feature
+	encode_features features = CC4Encode::typeNoFeature;
+	for (const TiXmlElement *sub_tag=charmap_node->FirstChildElement("feature"); sub_tag; sub_tag=sub_tag->NextSiblingElement("feature"))
+	{
+		if (!sub_tag->GetText()) continue;
+		features |= CC4Encode::toEncodeFeature(sub_tag->GetText());
+	}
+	if (!CC4Encode::checkFeatureValid(features)) return loadCharmapResult;
 
 	// readingpolicy
 	int num = 0;
@@ -378,8 +401,7 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	mapFile.close();
 
 	// create CC4Encode in memory
-	// TODO get features
-	CC4EncodeBase *encode = new CC4EncodeBase(name, version, description, CC4Encode::typeBaseOnAnsi|CC4Encode::typeResultUnicode, isAutoCheck, mapBuffer, mapBufferLength);
+	CC4EncodeBase *encode = new CC4EncodeBase(name, version, description, features, isAutoCheck, mapBuffer, mapBufferLength);
 	encode->setPolicies(policies);
 	encode->setSegments(segments);
 
