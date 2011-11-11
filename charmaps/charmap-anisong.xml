@@ -2,10 +2,11 @@
 <charmaps>
     <charmap>
         <name>Shift-JIS</name>
-        <version>Microsoft CP932</version>
-		<description>Shift-JIS to Unicode.</description>
+        <description>Shift-JIS to Unicode.</description>
         <useinautocheck>true</useinautocheck>
         <path>charmaps/jis2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
         <readingpolicy begin="0x00" end="0x7F" readnext="false" />
         <readingpolicy begin="0x80" end="0xA0" readnext="true" />
         <readingpolicy begin="0xA1" end="0xDF" readnext="false" />
@@ -19,9 +20,10 @@
     <charmap>
         <name>GBK</name>
         <version>Microsoft CP936(mozilla enhance)</version>
-		<description>GBK to Unicode.</description>
         <useinautocheck>true</useinautocheck>
         <path>charmaps/gb2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
         <readingpolicy begin="0x00" end="0x7F" readnext="false" />
         <readingpolicy begin="0x80" end="0xFF" readnext="true" />
         <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
@@ -30,10 +32,10 @@
     </charmap>
     <charmap>
         <name>BIG5</name>
-        <version>Unicode-at-on (UAO) 2.50</version>
-		<description>BIG5 to Unicode.</description>
         <useinautocheck>true</useinautocheck>
         <path>charmaps/b2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
         <readingpolicy begin="0x00" end="0x7F" readnext="false" />
         <readingpolicy begin="0x80" end="0xFF" readnext="true" />
         <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
@@ -43,9 +45,11 @@
     <charmap>
         <name>EUC-KR(Korean)</name>
         <version>Microsoft CP949</version>
-		<description>EUC-KR to Unicode.</description>
+        <description>EUC-KR to Unicode.</description>
         <useinautocheck>false</useinautocheck>
         <path>charmaps/kr2u-little-endian.map</path>
+        <feature>BaseOnMultibyte</feature>
+        <feature>ResultIsUnicode</feature>
         <readingpolicy begin="0x00" end="0x7F" readnext="false" />
         <readingpolicy begin="0x80" end="0xFF" readnext="true" />
         <segment begin="0x0000" end="0x007F" reference="ascii" type="ascii" />
