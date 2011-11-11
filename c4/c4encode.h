@@ -1,3 +1,19 @@
+/************************************************************************/
+/*                                                                      */
+/* c4-lib                                                               */
+/* c4-lib is A Common Codes Converting Context library.                 */
+/*                                                                      */
+/* Version: 0.1                                                         */
+/* Author:  wei_w (weiwl07@gmail.com)                                   */
+/* Published under Apache License 2.0                                   */
+/* http://www.apache.org/licenses/LICENSE-2.0                           */
+/*                                                                      */
+/* Project URL: http://code.google.com/p/c4-lib                         */
+/*                                                                      */
+/* Copyright 2011 wei_w                                                 */
+/*                                                                      */
+/************************************************************************/
+
 #pragma once
 
 #include <xstring>
@@ -22,6 +38,7 @@ public :
 	static const char    BIGENDIAN_BOM[2];
 	static const char    UTF_8_BOM[3];
 	enum encodeFeature {
+		typeNoFeature      = 0x0000,
 		typeBaseOnAnsi     = 0x0001,  /* InputStream: Multibyte encoding. High byte is at first */
 		typeBaseOnUnicode  = 0x0002,  /* InputStream: Unicode encoding. Low byte is at first */
 		typeFixed          = 0x0004,  /* InputStream: Fixed bytes of per character */
@@ -32,6 +49,27 @@ public :
 		typeInternal       = 0x0080,  /* Build-in encoding */
 		typeUTF16  = typeBaseOnUnicode|typeFixed|typeResultAnsi|typeInternal,  /* UTF-16 */
 		typeUTF8   = typeBaseOnUnicode|typeVariable|typeResultUnicode|typeInternal  /* UTF-8 */
+	};
+	static encodeFeature toEncodeFeature(const char* feature_text)
+	{
+		if (NULL == feature_text) return typeNoFeature;
+		if (strcmp("BaseOnMultibyte", feature_text) == 0) return typeBaseOnAnsi;
+		if (strcmp("BaseOnUnicode", feature_text) == 0) return typeBaseOnUnicode;
+		if (strcmp("ResultIsMultibyte", feature_text) == 0) return typeResultAnsi;
+		if (strcmp("ResultIsUnicode", feature_text) == 0) return typeResultUnicode;
+		return typeNoFeature;
+	};
+	static bool checkFeatureValid(encode_features features)
+	{
+		if (((features&typeBaseOnAnsi) != 0) && ((features&typeBaseOnUnicode) != 0))
+			return false;
+		if (((features&typeFixed) != 0) && ((features&typeVariable) != 0))
+			return false;
+		if (((features&typeResultAnsi) != 0) && ((features&typeResultUnicode) != 0))
+			return false;
+		if (((features&typeExternal) != 0) && ((features&typeInternal) != 0))
+			return false;
+		return true;
 	};
 
 public:
@@ -69,11 +107,11 @@ public:
 	std::wstring virtual wconvertWideString(const wchar_t *src) const {return std::wstring();};
 
 private:
-	std::wstring m_name;             // name of the encode, for example: Shift-JIS
-	std::wstring m_version;          // version of the encode, for example: Microsoft CP932
-	std::wstring m_description;      // description
-	encode_features  m_encodeFeatures;       // encode type
-	bool         m_autoCheck;        // the encode is used in auto-_match mode or not
+	std::wstring    m_name;             // name of the encode, for example: Shift-JIS
+	std::wstring    m_version;          // version of the encode, for example: Microsoft CP932
+	std::wstring    m_description;      // description
+	encode_features m_encodeFeatures;   // encode type
+	bool            m_autoCheck;        // the encode is used in auto-_match mode or not
 };
 
 /************************************************************************/
