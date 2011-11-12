@@ -1,3 +1,18 @@
+/************************************************************************/
+/*                                                                      */
+/* c4-lib example                                                       */
+/* This project is for showing how to use c4-lib.                       */
+/*                                                                      */
+/* Version: 0.1                                                         */
+/* Author:  wei_w (weiwl07@gmail.com)                                   */
+/* Distributed under GPLv3                                              */
+/*                                                                      */
+/* Project URL: http://code.google.com/p/c4-lib                         */
+/*                                                                      */
+/* Copyright 2011 wei_w                                                 */
+/*                                                                      */
+/************************************************************************/
+
 // c4example-check_convert.cpp : Defines the entry point for the console application.
 //
 #pragma once

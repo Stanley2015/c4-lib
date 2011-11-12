@@ -1,4 +1,19 @@
-// c4test.cpp : Defines the entry point for the console application.
+/************************************************************************/
+/*                                                                      */
+/* c4-lib example                                                       */
+/* This project is for showing how to use c4-lib.                       */
+/*                                                                      */
+/* Version: 0.1                                                         */
+/* Author:  wei_w (weiwl07@gmail.com)                                   */
+/* Distributed under GPLv3                                              */
+/*                                                                      */
+/* Project URL: http://code.google.com/p/c4-lib                         */
+/*                                                                      */
+/* Copyright 2011 wei_w                                                 */
+/*                                                                      */
+/************************************************************************/
+
+// c4example-utf8tounicode.cpp : Defines the entry point for the console application.
 //
 #pragma once
 
@@ -33,7 +48,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	infile.seekg(0, ios::end);
-	int length = infile.tellg();
+	unsigned int length = infile.tellg();
 	char * stringBuffer = new char[length+1];
 	memset((void*)stringBuffer, 0, length+1);
 	infile.seekg(0, 0);
