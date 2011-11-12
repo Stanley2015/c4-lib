@@ -78,7 +78,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		offset++;
 
-		HighByte=CharToHex(buffer[15])*16 +CharToHex(buffer[16]);
+		HighByte=CharToHex(buffer[15])*16+CharToHex(buffer[16]);
 		LowByte =CharToHex(buffer[17])*16+CharToHex(buffer[18]);
 
 		if ((HighByte>255)||(LowByte>255))
