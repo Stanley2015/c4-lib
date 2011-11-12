@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/* Make Ansi to Unicode Charmap 1.0 (Big5) for c4-lib                   */
+/* Make Ansi to Unicode Charmap 1.0 (Shift-JIS) for c4-lib              */
 /*                                                                      */
 /* Version: 1.0                                                         */
 /* Author:  kuyur (kuyur@kuyur.info)  -->twitter: @kuyur                */
