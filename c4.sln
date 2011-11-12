@@ -24,6 +24,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4charmapmaker-gb2u", "c4ch
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4charmapmaker-jis2u", "c4charmapmaker-jis2u\c4charmapmaker-jis2u.vcxproj", "{2583AD38-D617-4AEF-AA9C-362C2781AC79}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4charmapmaker-simp2tra", "c4charmapmaker-simp2tra\c4charmapmaker-simp2tra.vcxproj", "{FA21FFA5-474F-4AA7-9A90-2BF3B7BEBFCE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4example-simp2tra", "c4example-simp2tra\c4example-simp2tra.vcxproj", "{4813D072-6364-4C46-BA52-721347D32B82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -58,6 +62,14 @@ Global
 		{2583AD38-D617-4AEF-AA9C-362C2781AC79}.Debug|Win32.Build.0 = Debug|Win32
 		{2583AD38-D617-4AEF-AA9C-362C2781AC79}.Release|Win32.ActiveCfg = Release|Win32
 		{2583AD38-D617-4AEF-AA9C-362C2781AC79}.Release|Win32.Build.0 = Release|Win32
+		{FA21FFA5-474F-4AA7-9A90-2BF3B7BEBFCE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FA21FFA5-474F-4AA7-9A90-2BF3B7BEBFCE}.Debug|Win32.Build.0 = Debug|Win32
+		{FA21FFA5-474F-4AA7-9A90-2BF3B7BEBFCE}.Release|Win32.ActiveCfg = Release|Win32
+		{FA21FFA5-474F-4AA7-9A90-2BF3B7BEBFCE}.Release|Win32.Build.0 = Release|Win32
+		{4813D072-6364-4C46-BA52-721347D32B82}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4813D072-6364-4C46-BA52-721347D32B82}.Debug|Win32.Build.0 = Debug|Win32
+		{4813D072-6364-4C46-BA52-721347D32B82}.Release|Win32.ActiveCfg = Release|Win32
+		{4813D072-6364-4C46-BA52-721347D32B82}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
