@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/* Make Simplified Chinese character to Traditional Chinese character   */
+/* Make Traditional Chinese character to Simplified Chinese character   */
 /* map for c4-lib                                                       */
 /*                                                                      */
 /* Version: 1.0                                                         */
@@ -11,9 +11,8 @@
 /*                                                                      */
 /************************************************************************/
 
-// c4charmapmaker-simp2tra.cpp : Defines the entry point for the console application.
+// c4charmapmaker-tra2simp.cpp : Defines the entry point for the console application.
 //
-
 #include "stdafx.h"
 #include <string>
 #include <fstream>
@@ -37,18 +36,18 @@ unsigned char CharToHex(wchar_t ch)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	string inFilename = "../maps/src/simp2tra.txt";
+	string inFilename = "../maps/src/tra2simp.txt";
 	ifstream infile(inFilename.c_str(), ios::binary);
 	if (!infile)
 	{
-		cerr<<"Unable to open ../maps/src/simp2tra.txt!\n";
+		cerr<<"Unable to open ../maps/src/tra2simp.txt!\n";
 		return -1;
 	}
 
-	ofstream outfile_littleendian("../maps/dest/simp2tra-little-endian.map",ios::binary);
+	ofstream outfile_littleendian("../maps/dest/tra2simp-little-endian.map",ios::binary);
 	if (!outfile_littleendian)
 	{
-		cerr<<"Can not open ../maps/dest/simp2tra-little-endian.map!\n";
+		cerr<<"Can not open ../maps/dest/tra2simp-little-endian.map!\n";
 		return -1;
 	}
 
@@ -57,7 +56,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	wchar_t buffer[22];
 	memset((void*)buffer, 0, 22*sizeof(wchar_t));
 	int i=0;
-	wchar_t offset=0x359E;
+	wchar_t offset=0x42B7;
 	wchar_t simpChar=0;
 	unsigned char HighByte,LowByte;
 	while(!infile.eof())
@@ -93,4 +92,3 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	return 0;
 }
-
