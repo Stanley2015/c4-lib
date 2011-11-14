@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include <xstring>
 #include <vector>
 #include "c4policy.h"
 #include "c4segment.h"
