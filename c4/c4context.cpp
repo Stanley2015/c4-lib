@@ -437,6 +437,14 @@ void CC4Context::finalize()
 		for (segment_iter = m_segments.begin(); segment_iter != m_segments.end(); ++segment_iter)
 			delete *segment_iter;
 		m_segments.clear();
+
+		// delete map buffer
+		vector<unsigned char*>::iterator buffer_iter;
+		for (buffer_iter = m_mapBuffers.begin(); buffer_iter != m_mapBuffers.end(); ++buffer_iter)
+		{
+			delete *buffer_iter;
+		}
+		m_mapBuffers.clear();
 	}
 	m_bInitialized = false;
 }
