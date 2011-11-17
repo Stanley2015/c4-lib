@@ -74,7 +74,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout<<endl;
 	newContext->finalize();
 	delete newContext;
-	// no good method.
+	// not a good method.
 	_CrtDumpMemoryLeaks();
 
 	return 0;
