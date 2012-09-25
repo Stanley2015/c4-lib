@@ -73,7 +73,7 @@ public :
 
 public:
 	CC4Encode(const std::wstring& name, const std::wstring& version, const std::wstring& description, encode_features features, bool is_auto_check);
-	virtual ~CC4Encode();
+	virtual ~CC4Encode() {};
 	std::wstring toString() const;
 	bool isAutoCheck() const;
 	void setAutoCheck(bool is_auto_check);
@@ -182,7 +182,7 @@ public:
 private:
 	static CC4EncodeUTF16 *s_instance;  // Unicode instance. Singleton pattern
 	CC4EncodeUTF16(const std::wstring& name, const std::wstring& version, const std::wstring& description, bool is_auto_check);
-	~CC4EncodeUTF16() {};
+	~CC4EncodeUTF16() {/*s_instance = NULL;*/};
 	class CGarbo
 	{
 	public:
@@ -236,7 +236,7 @@ public:
 private:
 	static CC4EncodeUTF8   *s_instance;    // Utf-8 instance. Singleton pattern
 	CC4EncodeUTF8(const std::wstring& name, const std::wstring& version, const std::wstring& description, bool is_auto_check);
-	~CC4EncodeUTF8() {};
+	~CC4EncodeUTF8() {/*s_instance = NULL;*/};
 	class CGarbo
 	{
 	public:
