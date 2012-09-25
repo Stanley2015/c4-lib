@@ -84,46 +84,6 @@ CC4EncodeBase::CC4EncodeBase(const std::wstring& name, const std::wstring& versi
 	m_segments  = NULL;
 }
 
-std::wstring CC4EncodeBase::toString() const
-{
-	return CC4Encode::toString();
-}
-
-bool CC4EncodeBase::isAutoCheck() const
-{
-	return CC4Encode::isAutoCheck();
-}
-
-void CC4EncodeBase::setAutoCheck(bool is_auto_check)
-{
-	CC4Encode::setAutoCheck(is_auto_check);
-}
-
-std::wstring CC4EncodeBase::getName() const
-{
-	return CC4Encode::getName();
-}
-
-std::wstring CC4EncodeBase::getVersion() const
-{
-	return CC4Encode::getVersion();
-}
-
-std::wstring CC4EncodeBase::getDescription() const
-{
-	return CC4Encode::getDescription();
-}
-
-encode_features CC4EncodeBase::getEncodeFeatures() const
-{
-	return CC4Encode::getEncodeFeatures();
-}
-
-bool CC4EncodeBase::hasFeature(CC4Encode::encodeFeature encode_feature) const
-{
-	return CC4Encode::hasFeature(encode_feature);
-}
-
 bool CC4EncodeBase::match(const char *src, unsigned int src_length) const
 {
 	if (hasFeature(typeBaseOnUnicode))
@@ -505,46 +465,6 @@ CC4EncodeUTF16::CC4EncodeUTF16(const std::wstring& name, const std::wstring& ver
 	:CC4Encode(name, version, description, CC4EncodeUTF16::_getEncodeFeatures(), is_auto_check)
 {}
 
-std::wstring CC4EncodeUTF16::toString() const
-{
-	return CC4Encode::toString();
-}
-
-bool CC4EncodeUTF16::isAutoCheck() const
-{
-	return CC4Encode::isAutoCheck();
-}
-
-void CC4EncodeUTF16::setAutoCheck(bool is_auto_check)
-{
-	CC4Encode::setAutoCheck(is_auto_check);
-}
-
-std::wstring CC4EncodeUTF16::getName() const
-{
-	return CC4Encode::getName();
-}
-
-std::wstring CC4EncodeUTF16::getVersion() const
-{
-	return CC4Encode::getVersion();
-}
-
-std::wstring CC4EncodeUTF16::getDescription() const
-{
-	return CC4Encode::getDescription();
-}
-
-encode_features CC4EncodeUTF16::getEncodeFeatures() const
-{
-	return CC4Encode::getEncodeFeatures();
-}
-
-bool CC4EncodeUTF16::hasFeature(CC4Encode::encodeFeature encode_feature) const
-{
-	return CC4Encode::hasFeature(encode_feature);
-}
-
 std::wstring CC4EncodeUTF16::_getName()
 {
 	return L"UTF-16";
@@ -805,46 +725,6 @@ CC4EncodeUTF8::CC4EncodeUTF8(const std::wstring& name, const std::wstring& versi
 	:CC4Encode(name, version, description, CC4EncodeUTF8::_getEncodeFeatures(), is_auto_check)
 {}
 
-std::wstring CC4EncodeUTF8::toString() const
-{
-	return CC4Encode::toString();
-}
-
-bool CC4EncodeUTF8::isAutoCheck() const
-{
-	return CC4Encode::isAutoCheck();
-}
-
-void CC4EncodeUTF8::setAutoCheck(bool is_auto_check)
-{
-	CC4Encode::setAutoCheck(is_auto_check);
-}
-
-std::wstring CC4EncodeUTF8::getName() const
-{
-	return CC4Encode::getName();
-}
-
-std::wstring CC4EncodeUTF8::getVersion() const
-{
-	return CC4Encode::getVersion();
-}
-
-std::wstring CC4EncodeUTF8::getDescription() const
-{
-	return CC4Encode::getDescription();
-}
-
-encode_features CC4EncodeUTF8::getEncodeFeatures() const
-{
-	return CC4Encode::getEncodeFeatures();
-}
-
-bool CC4EncodeUTF8::hasFeature(CC4Encode::encodeFeature encode_feature) const
-{
-	return CC4Encode::hasFeature(encode_feature);
-}
-
 std::wstring CC4EncodeUTF8::_getName()
 {
 	return L"UTF-8";
@@ -875,6 +755,11 @@ CC4EncodeUTF8* CC4EncodeUTF8::getInstance()
 bool CC4EncodeUTF8::match(const char *src, unsigned int src_length) const
 {
 	return CC4EncodeUTF8::_match(src, src_length);
+}
+
+bool CC4EncodeUTF8::wmatch(const wchar_t *src, unsigned int src_str_length) const
+{
+	return false;
 }
 
 std::string CC4EncodeUTF8::convertText(const char *src, unsigned int src_length) const
