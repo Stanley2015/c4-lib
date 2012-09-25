@@ -21,14 +21,11 @@ const char CC4Encode::BIGENDIAN_BOM[2]     = {'\xFE', '\xFF'};
 const char CC4Encode::UTF_8_BOM[3]         = {'\xEF', '\xBB', '\xBF'};
 CC4EncodeUTF16* CC4EncodeUTF16::s_instance = NULL;
 CC4EncodeUTF8*  CC4EncodeUTF8::s_instance  = NULL;
-CC4EncodeUTF16::CGarbo CC4EncodeUTF16::garbo = CC4EncodeUTF16::CGarbo();
-CC4EncodeUTF8::CGarbo  CC4EncodeUTF8::garbo  = CC4EncodeUTF8::CGarbo();
+CC4EncodeUTF16::CGarbo CC4EncodeUTF16::garbo;
+CC4EncodeUTF8::CGarbo  CC4EncodeUTF8::garbo;
 
 CC4Encode::CC4Encode(const std::wstring& name, const std::wstring& version, const std::wstring& description, encode_features features, bool is_auto_check)
 	:m_name(name),m_version(version),m_description(description),m_autoCheck(is_auto_check),m_encodeFeatures(features)
-{}
-
-CC4Encode::~CC4Encode()
 {}
 
 std::wstring CC4Encode::toString() const
