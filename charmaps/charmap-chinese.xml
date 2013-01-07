@@ -3,7 +3,7 @@
     <charmap>
         <name>Tra-CHN(Unicode) to Simp-CHN(Unicode)</name>
         <version>Unicode 4.0 Unihan(Wikipedia version)</version>
-        <description>Traditional Chinese character to Simplified Chinese character basing on Unicode Plane 0(BMP). Do not support character bigger than 0xFFFF.</description>
+        <description>Traditional Chinese character to Simplified Chinese character basing on Unicode Plane 0(BMP). Not support character bigger than 0xFFFF.</description>
         <useinautocheck>false</useinautocheck>
         <path>charmaps/tra2simp-little-endian.map</path>
         <feature>BaseOnUnicode</feature>
@@ -16,7 +16,7 @@
     <charmap>
         <name>Simp-CHN(Unicode) to Tra-CHN(Unicode)</name>
         <version>Unicode 4.0 Unihan(Wikipedia version)</version>
-        <description>Simplified Chinese character to Traditional Chinese character basing on Unicode Plane 0(BMP). Do not support character bigger than 0xFFFF.</description>
+        <description>Simplified Chinese character to Traditional Chinese character basing on Unicode Plane 0(BMP). Not support character bigger than 0xFFFF.</description>
         <useinautocheck>false</useinautocheck>
         <path>charmaps/simp2tra-little-endian.map</path>
         <feature>BaseOnUnicode</feature>
