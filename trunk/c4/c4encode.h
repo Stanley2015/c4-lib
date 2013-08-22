@@ -20,6 +20,7 @@
 #ifndef C4ENCODE_H_
 #define C4ENCODE_H_
 
+#include <string>
 #include <vector>
 #include "c4policy.h"
 #include "c4segment.h"

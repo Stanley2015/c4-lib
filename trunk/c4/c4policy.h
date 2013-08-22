@@ -21,7 +21,6 @@
 #define C4POLICY_H_
 
 #include <stdlib.h>
-#include <string.h>
 
 struct CC4Policy_tag;
 class CC4Policies;
