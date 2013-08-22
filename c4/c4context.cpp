@@ -18,7 +18,6 @@
 #include "c4context.h"
 #include "c4encode.h"
 #include "tinyxml.h"
-using namespace std;
 
 CC4Context::CC4Context(const std::wstring &charmap_name, const std::wstring &base_path)
 	:m_bInitialized(false), m_charmapConfPath(base_path), m_basePath(base_path), m_errorMessage(L"no error.")
@@ -53,7 +52,7 @@ bool CC4Context::init()
 
 	// Because TiXml does not support wchar_t file name,
 	// use stream to load xml file.
-	wifstream file(m_charmapConfPath.c_str(), ios::in|ios::binary);
+	std::wifstream file(m_charmapConfPath.c_str(), std::ios::in|std::ios::binary);
 	if (!file)
 	{
 		m_errorMessage.clear();
@@ -62,7 +61,7 @@ bool CC4Context::init()
 		return m_bInitialized;
 	}
 	
-	file.seekg(0, ios::end);
+	file.seekg(0, std::ios::end);
 	unsigned int fileLength = file.tellg();
 	char *fileBuffer = new char[fileLength+1];
 	memset((void*)fileBuffer, 0, fileLength+1);
@@ -142,21 +141,21 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	pElem = charmap_node->FirstChild("name")->ToElement();
 	if (!pElem) return loadCharmapResult;
 	if (!pElem->GetText()) return loadCharmapResult;
-	wstring &name = CC4EncodeUTF8::convert2unicode(pElem->GetText(), strlen(pElem->GetText()));
+	std::wstring &name = CC4EncodeUTF8::convert2unicode(pElem->GetText(), strlen(pElem->GetText()));
 
 	// version. Version is optional
 	const char *ver = NULL;
 	pElem = charmap_node->FirstChildElement("version");
 	if (pElem)
 		 ver = charmap_node->FirstChildElement("version")->GetText();
-	wstring &version = CC4EncodeUTF8::convert2unicode(ver, (NULL!=ver) ? strlen(ver) : 0);
+	std::wstring &version = CC4EncodeUTF8::convert2unicode(ver, (NULL!=ver) ? strlen(ver) : 0);
 
 	// description. Description is optional
 	const char *desc = NULL;
 	pElem = charmap_node->FirstChildElement("description");
 	if (pElem)
 		desc = charmap_node->FirstChildElement("description")->GetText();
-	wstring &description = CC4EncodeUTF8::convert2unicode(desc, (NULL!=desc) ? strlen(desc) : 0);
+	std::wstring &description = CC4EncodeUTF8::convert2unicode(desc, (NULL!=desc) ? strlen(desc) : 0);
 
 	// isAutoCheck
 	bool isAutoCheck = false;
@@ -172,7 +171,7 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	pElem = charmap_node->FirstChild("path")->ToElement();
 	if (!pElem) return loadCharmapResult;
 	if (!pElem->GetText()) return loadCharmapResult;
-	wstring mapPath(m_basePath);
+	std::wstring mapPath(m_basePath);
 	mapPath.append(CC4EncodeUTF8::convert2unicode(pElem->GetText(), strlen(pElem->GetText())));
 
 	// feature
@@ -374,7 +373,7 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 	}
 
 	// Loading map buffer
-	wifstream mapFile(mapPath.c_str(), ios::in|ios::binary);
+	std::wifstream mapFile(mapPath.c_str(), std::ios::in|std::ios::binary);
 	if (!mapFile)
 	{
 		loadCharmapResult = false;
@@ -387,7 +386,7 @@ bool CC4Context::loadCharmap(const TiXmlElement *charmap_node)
 		m_errorMessage.append(mapPath);
 		return loadCharmapResult;
 	}
-	mapFile.seekg(0, ios::end);
+	mapFile.seekg(0, std::ios::end);
 	unsigned int mapBufferLength = mapFile.tellg();
 	unsigned char *mapBuffer = new unsigned char[mapBufferLength];
 	memset((void*)mapBuffer, 0 ,mapBufferLength);
@@ -418,7 +417,7 @@ void CC4Context::finalize()
 	if (m_bInitialized)
 	{
 		// delete encode
-		vector<CC4Encode*>::iterator encode_iter;
+		std::vector<CC4Encode*>::iterator encode_iter;
 		encode_iter = m_encodes.begin();
 		encode_iter++;
 		encode_iter++;
@@ -427,19 +426,19 @@ void CC4Context::finalize()
 		m_encodes.erase(m_encodes.begin()+2, m_encodes.end());
 
 		// delete policies
-		vector<CC4Policies*>::iterator policies_iter;
+		std::vector<CC4Policies*>::iterator policies_iter;
 		for (policies_iter = m_policies.begin(); policies_iter != m_policies.end(); ++policies_iter)
 			delete *policies_iter;
 		m_policies.clear();
 
 		// delete segments
-		vector<CC4Segments*>::iterator segment_iter;
+		std::vector<CC4Segments*>::iterator segment_iter;
 		for (segment_iter = m_segments.begin(); segment_iter != m_segments.end(); ++segment_iter)
 			delete *segment_iter;
 		m_segments.clear();
 
 		// delete map buffer
-		vector<unsigned char*>::iterator buffer_iter;
+		std::vector<unsigned char*>::iterator buffer_iter;
 		for (buffer_iter = m_mapBuffers.begin(); buffer_iter != m_mapBuffers.end(); ++buffer_iter)
 		{
 			delete *buffer_iter;
@@ -493,9 +492,9 @@ const CC4Encode* CC4Context::getMostPossibleEncode(const char* text) const
 	return NULL;
 }
 
-list<const CC4Encode*> CC4Context::getEncodesList() const
+std::list<const CC4Encode*> CC4Context::getEncodesList() const
 {
-	list<const CC4Encode*> encodes_list;
+	std::list<const CC4Encode*> encodes_list;
 	for (unsigned int i=0; i< m_encodes.size(); ++i)
 	{
 		const CC4Encode *encode = m_encodes[i];
@@ -504,9 +503,9 @@ list<const CC4Encode*> CC4Context::getEncodesList() const
 	return encodes_list;
 }
 
-list<wstring> CC4Context::getEncodesNameList() const
+std::list<std::wstring> CC4Context::getEncodesNameList() const
 {
-	list<wstring> name_list;
+	std::list<std::wstring> name_list;
 	for (unsigned int i=0; i< m_encodes.size(); ++i)
 	{
 		const CC4Encode *encode = m_encodes[i];
