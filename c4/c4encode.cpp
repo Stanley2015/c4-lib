@@ -866,7 +866,7 @@ std::wstring CC4EncodeUTF8::convert2unicode(const char *src, unsigned int src_le
 		return std::wstring();
 
 	unsigned int need_length = calcUnicodeStringLength(src, src_length);
-	if (0 == need_length)
+	if ((0 == need_length) || ((unsigned int) -1 == need_length))
 		return std::wstring();
 
 	unsigned int offset = 0;
@@ -920,7 +920,10 @@ bool CC4EncodeUTF8::convert2unicode(const char *src, unsigned int src_length, ch
 		return false;
 	if (check_dest_length)
 	{
-		if (dest_length < calcUnicodeStringLength(src, src_length)*sizeof(wchar_t))
+		unsigned int need_length = calcUnicodeStringLength(src, src_length);
+		if ((unsigned int)-1 == need_length)
+			return false;
+		if (dest_length < need_length*sizeof(wchar_t))
 			return false;
 	}
 
@@ -972,7 +975,7 @@ bool CC4EncodeUTF8::convert2unicode(const char *src, unsigned int src_length, wc
 unsigned int CC4EncodeUTF8::calcUnicodeStringLength(const char *src, unsigned int src_length)
 {
 	if (NULL == src)
-		return 0;
+		return -1;
 	if (0 == src_length)
 		return 0;
 
@@ -1005,7 +1008,7 @@ unsigned int CC4EncodeUTF8::calcUnicodeStringLength(const char *src, unsigned in
 		*/
 		else // not utf-8 string
 		{
-			return 0;
+			return -1; // should return -1
 		}
 	}
 
