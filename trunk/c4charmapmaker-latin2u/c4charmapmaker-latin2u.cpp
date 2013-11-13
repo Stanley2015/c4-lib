@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/* Make Cyrillic(CP1251) to Unicode Charmap for c4-lib                  */
+/* Make Latin(Windows-1252) to Unicode Charmap for c4-lib               */
 /*                                                                      */
 /* Version: 1.0                                                         */
 /* Author:  kuyur (kuyur@kuyur.info)  -->twitter: @kuyur                */
@@ -10,7 +10,7 @@
 /*                                                                      */
 /************************************************************************/
 
-// c4charmapmaker-cyrillic2u.cpp : Defines the entry point for the console application.
+// c4charmapmaker-latin2u.cpp : Defines the entry point for the console application.
 //
 
 #pragma once
@@ -38,18 +38,18 @@ unsigned char CharToHex(char ch)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	string inFilename="../maps/src/CP1251.txt";
+	string inFilename="../maps/src/CP1252.txt";
 	ifstream infile(inFilename.c_str());
 	if (!infile)
 	{
-		cerr<<"Unable to open ../maps/src/CP1251.txt!\n";
+		cerr<<"Unable to open ../maps/src/CP1252.txt!\n";
 		return -1;
 	}
 
-	ofstream outfile_littleendian("../maps/dest/cyrillic2u-little-endian.map",ios::binary);
+	ofstream outfile_littleendian("../maps/dest/latin2u-little-endian.map",ios::binary);
 	if (!outfile_littleendian)
 	{
-		cerr<<"Can not open ../maps/dest/cyrillic2u-little-endian.map!\n";
+		cerr<<"Can not open ../maps/dest/latin2u-little-endian.map!\n";
 		return -1;
 	}
 
@@ -61,10 +61,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		i++;
 
-		int cyrillicOffset;
-		cyrillicOffset=CharToHex(str[3])+CharToHex(str[2])*16;
+		int latinOffset;
+		latinOffset=CharToHex(str[3])+CharToHex(str[2])*16;
 
-		while(offset!=cyrillicOffset)
+		while(offset!=latinOffset)
 		{
 			offset++;
 			outfile_littleendian.write(zero,2);
@@ -72,7 +72,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		offset++;
 
 		unsigned char HighByte,LowByte;
-		HighByte=CharToHex(str[10])*16 +CharToHex(str[11]);
+		HighByte=CharToHex(str[10])*16+CharToHex(str[11]);
 		LowByte =CharToHex(str[12])*16+CharToHex(str[13]);
 
 		if ((HighByte>255)||(LowByte>255))
