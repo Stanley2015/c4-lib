@@ -26,7 +26,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="c4charmapmaker-cyrillic2u.cpp">
+    <ClCompile Include="c4charmapmaker-latin2u.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

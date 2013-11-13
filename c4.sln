@@ -42,6 +42,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4example-test", "c4example
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4charmapmaker-cyrillic2u", "c4charmapmaker-cyrillic2u\c4charmapmaker-cyrillic2u.vcxproj", "{C4947011-2DF6-4C75-86D9-1881738A714D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c4charmapmaker-latin2u", "c4charmapmaker-latin2u\c4charmapmaker-latin2u.vcxproj", "{5A25B019-88B1-4DAD-99C0-048E158E1FBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -100,6 +102,10 @@ Global
 		{C4947011-2DF6-4C75-86D9-1881738A714D}.Debug|Win32.Build.0 = Debug|Win32
 		{C4947011-2DF6-4C75-86D9-1881738A714D}.Release|Win32.ActiveCfg = Release|Win32
 		{C4947011-2DF6-4C75-86D9-1881738A714D}.Release|Win32.Build.0 = Release|Win32
+		{5A25B019-88B1-4DAD-99C0-048E158E1FBC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5A25B019-88B1-4DAD-99C0-048E158E1FBC}.Debug|Win32.Build.0 = Debug|Win32
+		{5A25B019-88B1-4DAD-99C0-048E158E1FBC}.Release|Win32.ActiveCfg = Release|Win32
+		{5A25B019-88B1-4DAD-99C0-048E158E1FBC}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
