@@ -1,0 +1,1 @@
+c4 is short for Common Codes Converting Context.
